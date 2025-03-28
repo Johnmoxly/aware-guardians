@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { AlertCircle, CheckCircle, MessageSquare, Smartphone } from "lucide-react";
+import { AlertCircle, CheckCircle, MessageSquare, Smartphone, RotateCcw } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 interface SmishingProps {
@@ -25,6 +25,11 @@ const Smishing: React.FC<SmishingProps> = ({
     setUserResponse(response);
     setShowExplanation(true);
     onComplete(response === "scam");
+  };
+
+  const handleTryAgain = () => {
+    setUserResponse(null);
+    setShowExplanation(false);
   };
 
   return (
@@ -69,41 +74,67 @@ const Smishing: React.FC<SmishingProps> = ({
           </Button>
         </div>
       ) : (
-        <Alert variant={userResponse === "scam" ? "default" : "destructive"}>
-          <div className="flex items-center gap-2">
-            {userResponse === "scam" ? (
-              <CheckCircle className="h-5 w-5" />
-            ) : (
-              <AlertCircle className="h-5 w-5" />
-            )}
-            <AlertTitle>
-              {userResponse === "scam"
-                ? "Correct! This is a smishing attempt."
-                : "Be careful! This is actually a smishing attempt."}
-            </AlertTitle>
-          </div>
-          <AlertDescription className="pt-2">
-            <p className="mb-4">
-              {userResponse === "scam"
-                ? "Great job spotting this SMS phishing attempt! Here's why this message is suspicious:"
-                : "This message shows several red flags that indicate it's a scam:"}
-            </p>
-            <ul className="ml-6 list-disc space-y-1">
-              {redFlags.map((flag, index) => (
-                <li key={index}>{flag}</li>
-              ))}
-            </ul>
-            <div className="mt-4">
-              <h4 className="font-medium">How to stay safe:</h4>
-              <ul className="ml-6 list-disc space-y-1 mt-2">
-                <li>Never click links in unexpected text messages</li>
-                <li>Don't reply to suspicious numbers</li>
-                <li>Contact companies directly through their official website if you receive alerts</li>
-                <li>Report suspicious messages to your mobile carrier</li>
-              </ul>
+        <div className="space-y-4">
+          <Alert variant={userResponse === "scam" ? "default" : "destructive"}>
+            <div className="flex items-center gap-2">
+              {userResponse === "scam" ? (
+                <CheckCircle className="h-5 w-5" />
+              ) : (
+                <AlertCircle className="h-5 w-5" />
+              )}
+              <AlertTitle>
+                {userResponse === "scam"
+                  ? "Correct! This is a smishing attempt."
+                  : "Be careful! This is actually a smishing attempt."}
+              </AlertTitle>
             </div>
-          </AlertDescription>
-        </Alert>
+            <AlertDescription className="pt-2">
+              <p className="mb-4">
+                {userResponse === "scam"
+                  ? "Great job spotting this SMS phishing attempt! Here's why this message is suspicious:"
+                  : "This message shows several red flags that indicate it's a scam:"}
+              </p>
+              <ul className="ml-6 list-disc space-y-1">
+                {redFlags.map((flag, index) => (
+                  <li key={index}>{flag}</li>
+                ))}
+              </ul>
+              <div className="mt-4">
+                <h4 className="font-medium">How to stay safe:</h4>
+                <ul className="ml-6 list-disc space-y-1 mt-2">
+                  <li>Never click links in unexpected text messages</li>
+                  <li>Don't reply to suspicious numbers</li>
+                  <li>Contact companies directly through their official website if you receive alerts</li>
+                  <li>Report suspicious messages to your mobile carrier</li>
+                </ul>
+              </div>
+            </AlertDescription>
+          </Alert>
+
+          <div className="flex space-x-2">
+            {userResponse === "legitimate" && (
+              <Button 
+                variant="outline" 
+                className="flex items-center gap-2" 
+                onClick={handleTryAgain}
+              >
+                <RotateCcw className="h-4 w-4" />
+                Try Again
+              </Button>
+            )}
+            <Button 
+              variant="default" 
+              className="flex-1" 
+              onClick={() => {
+                setUserResponse(null);
+                setShowExplanation(false);
+                onComplete(userResponse === "scam");
+              }}
+            >
+              Choose Another Scenario
+            </Button>
+          </div>
+        </div>
       )}
     </div>
   );
