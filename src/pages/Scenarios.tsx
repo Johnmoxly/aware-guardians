@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { 
   Mail, 
-  Link, 
+  Link as LinkIcon, 
   AlertTriangle, 
   Users, 
   Phone, 
@@ -9,7 +9,12 @@ import {
   CreditCard,
   Clock,
   HelpCircle,
-  Info
+  Info,
+  Smartphone,
+  UserRound,
+  Usb,
+  Lock,
+  BadgeDollarSign
 } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -25,6 +30,11 @@ import TechSupportScam from "@/components/TechSupportScam";
 import TechConfusionScam from "@/components/TechConfusionScam";
 import LotteryScam from "@/components/LotteryScam";
 import HealthProductScam from "@/components/HealthProductScam";
+import Smishing from "@/components/Smishing";
+import Pretexting from "@/components/Pretexting";
+import BaitingAttack from "@/components/BaitingAttack";
+import WhalingAttack from "@/components/WhalingAttack";
+import RansomwareSimulation from "@/components/RansomwareSimulation";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { CheckCircle } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
@@ -292,6 +302,138 @@ const Scenarios = () => {
     />
   );
 
+  const smishingScenario = (
+    <Smishing
+      senderNumber="+1 (833) 555-2390"
+      messageContent={`ALERT: Your Netflix account has been suspended. To reactivate your account and avoid additional charges, verify your payment information now: http://netflix-account-verify.tk/login`}
+      redFlags={[
+        "Sends urgency-based message about account problems",
+        "Uses a suspicious domain (.tk instead of .com)",
+        "Contains shortened or suspicious URLs",
+        "Requests payment or account information via text",
+        "Mentions financial consequences to create fear",
+        "Comes from an unrecognized phone number"
+      ]}
+      onComplete={(success) => handleScenarioComplete("smishing", success)}
+    />
+  );
+
+  const pretextingScenario = (
+    <Pretexting
+      scenario="You receive a call from someone claiming to be from your company's IT department. They explain that there's been a security breach and they need to verify your account credentials immediately."
+      callerIdentity="Mark - IT Department"
+      conversationSteps={[
+        "Hello, this is Mark from the IT department. We've detected some suspicious login attempts to our company systems from an overseas location.",
+        "Hi Mark, what's going on? Is my account affected?",
+        "Yes, your account might be compromised. We need to verify your identity before we can secure it. Could you confirm your username and password for our records?",
+        "I'm not sure I should share my password over the phone. Is there another way to verify my identity?",
+        "We're in an emergency situation and need to act fast. This is our standard procedure. Your CEO has authorized this emergency protocol. If you don't verify now, we'll have to disable your account completely.",
+        "I still don't feel comfortable sharing my password. Maybe I should call the IT helpdesk back using the company directory number?"
+      ]}
+      redFlags={[
+        "Requesting credentials over the phone is against standard security protocols",
+        "Creating a sense of urgency to pressure quick decisions",
+        "Mentioning authority figures (CEO) to encourage compliance",
+        "Threatening negative consequences if you don't comply",
+        "Caller contacted you rather than you contacting official support",
+        "Unable to verify the caller's actual identity"
+      ]}
+      onComplete={(success) => handleScenarioComplete("pretexting", success)}
+    />
+  );
+
+  const baitingAttackScenario = (
+    <BaitingAttack
+      scenarioTitle="Free Movie Download"
+      scenarioDescription="You've found a website offering free downloads of movies still in theaters."
+      baitType="download"
+      baitDetails={`EXCLUSIVE ACCESS! Download the latest Hollywood blockbusters for FREE!
+      
+      • No subscription required
+      • HD quality guaranteed
+      • Movies still in theaters
+      • Just download our special video player to access
+      
+      DOWNLOAD NOW: MovieUnlockerPro.exe (13.5 MB)
+      
+      *By downloading, you agree to install our recommended browser extension and toolbar.`}
+      redFlags={[
+        "Offers content that would normally cost money for free",
+        "Requires downloading a special software to access content",
+        "Movies still in theaters are not legally available for download",
+        "Contains hidden agreements to install additional software",
+        "Executable file download (.exe) instead of a video file",
+        "Poor grammar or unprofessional appearance",
+        "Website lacks proper contact information or privacy policy"
+      ]}
+      onComplete={(success) => handleScenarioComplete("baiting-attack", success)}
+    />
+  );
+
+  const whalingAttackScenario = (
+    <WhalingAttack
+      sender="Sandra Miller"
+      senderTitle="Chief Financial Officer"
+      recipient="James Wilson"
+      recipientTitle="Chief Executive Officer"
+      subject="URGENT: Time-sensitive wire transfer needed"
+      content={`
+        <p>James,</p>
+        <p>I hope this email finds you well despite the short notice. I'm currently in a confidential meeting with potential investors that could significantly benefit our Q4 results.</p>
+        <p>We need to make an immediate wire transfer of $457,000 to secure this opportunity. Due to the sensitive nature of the deal, please keep this matter strictly confidential until the official announcement next week.</p>
+        <p>Banking details:</p>
+        <ul>
+          <li>Bank: International Commerce Bank</li>
+          <li>Account Name: Global Investment Partners</li>
+          <li>Account Number: 7592301458</li>
+          <li>SWIFT: INTCOM452</li>
+        </ul>
+        <p>Please confirm when this has been processed as the investors are waiting for our commitment.</p>
+        <p>Thanks for your immediate attention to this matter.</p>
+        <p>Sandra</p>
+        <p><i>Sent from my iPhone</i></p>
+      `}
+      urgency="high"
+      redFlags={[
+        "Creating extreme urgency for a large financial transaction",
+        "Requesting unusual confidentiality about the transaction",
+        "Unusual timing or circumstances (executive supposedly in meetings)",
+        "Bypassing normal financial approval processes",
+        "Attempt to invoke authority of executive positions",
+        "Contains details that can't be easily verified immediately",
+        "May have subtle differences from the actual executive's email address",
+        "The email might use 'sent from mobile device' to explain errors or brevity"
+      ]}
+      onComplete={(success) => handleScenarioComplete("whaling-attack", success)}
+    />
+  );
+
+  const ransomwareSimulationScenario = (
+    <RansomwareSimulation
+      ransonAmaunt="$3,500 in Bitcoin"
+      timeLimit="48 hours"
+      redFlags={[
+        "Unexpected file access slowdowns or unusual system behavior",
+        "Unusual network activity on your device",
+        "Files with changed extensions (like .encrypted, .locked, .crypto)",
+        "Ransom notes as text files or desktop backgrounds",
+        "Inability to open normal files",
+        "Suspicious email attachments or links clicked recently"
+      ]}
+      preventionTips={[
+        "Keep regular backups of important files (offline)",
+        "Keep your operating system and software updated",
+        "Use reputable antivirus and anti-malware software",
+        "Be cautious with email attachments and links",
+        "Use strong spam filters and email security",
+        "Implement network segmentation in business environments",
+        "Use principle of least privilege for system access",
+        "Train employees/family members to recognize threats"
+      ]}
+      onComplete={(success) => handleScenarioComplete("ransomware-simulation", success)}
+    />
+  );
+
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
@@ -319,6 +461,11 @@ const Scenarios = () => {
                     {activeScenario === "tech-confusion-scam" && "Computer Virus Alert Scenario"}
                     {activeScenario === "lottery-scam" && "Lottery Prize Scenario"}
                     {activeScenario === "health-product-scam" && "Health Product Advertisement Scenario"}
+                    {activeScenario === "smishing" && "SMS Phishing (Smishing) Scenario"}
+                    {activeScenario === "pretexting" && "Pretexting Attack Scenario"}
+                    {activeScenario === "baiting-attack" && "Baiting Attack Scenario"}
+                    {activeScenario === "whaling-attack" && "Whaling Attack Scenario"}
+                    {activeScenario === "ransomware-simulation" && "Ransomware Attack Simulation"}
                   </h2>
                   <Button variant="outline" onClick={resetScenario}>
                     Choose Another Scenario
@@ -335,14 +482,19 @@ const Scenarios = () => {
                 {activeScenario === "tech-confusion-scam" && techConfusionScamScenario}
                 {activeScenario === "lottery-scam" && lotteryScamScenario}
                 {activeScenario === "health-product-scam" && healthProductScamScenario}
+                {activeScenario === "smishing" && smishingScenario}
+                {activeScenario === "pretexting" && pretextingScenario}
+                {activeScenario === "baiting-attack" && baitingAttackScenario}
+                {activeScenario === "whaling-attack" && whalingAttackScenario}
+                {activeScenario === "ransomware-simulation" && ransomwareSimulationScenario}
               </div>
             ) : (
               <Tabs defaultValue="common" className="space-y-6">
-                <TabsList className="grid w-full max-w-md mx-auto grid-cols-3">
-                  <TabsTrigger value="common">Common Attacks</TabsTrigger>
+                <TabsList className="grid w-full max-w-md mx-auto grid-cols-4">
+                  <TabsTrigger value="common">Common</TabsTrigger>
                   <TabsTrigger value="advanced">Advanced</TabsTrigger>
                   <TabsTrigger value="seniors">For Seniors</TabsTrigger>
-                  <TabsTrigger value="completed" className="hidden md:block">Completed</TabsTrigger>
+                  <TabsTrigger value="new">New Threats</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="common" className="space-y-6">
@@ -368,7 +520,7 @@ const Scenarios = () => {
                       className="flex flex-col items-start rounded-lg border p-4 text-left shadow-sm transition-all hover:bg-muted/50 hover:shadow"
                     >
                       <div className="mb-2 flex w-full items-center justify-between">
-                        <Link className="h-6 w-6 text-primary" />
+                        <LinkIcon className="h-6 w-6 text-primary" />
                         {completedScenarios.includes("suspicious-link") && (
                           <CheckCircle className="h-5 w-5 text-secondary" />
                         )}
@@ -516,6 +668,90 @@ const Scenarios = () => {
                     </button>
                   </div>
                 </TabsContent>
+                
+                <TabsContent value="new" className="space-y-6">
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <button
+                      onClick={() => setActiveScenario("smishing")}
+                      className="flex flex-col items-start rounded-lg border p-4 text-left shadow-sm transition-all hover:bg-muted/50 hover:shadow"
+                    >
+                      <div className="mb-2 flex w-full items-center justify-between">
+                        <Smartphone className="h-6 w-6 text-primary" />
+                        {completedScenarios.includes("smishing") && (
+                          <CheckCircle className="h-5 w-5 text-secondary" />
+                        )}
+                      </div>
+                      <h3 className="text-lg font-semibold">SMS Phishing</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Identify text message fraud attempts
+                      </p>
+                    </button>
+                    
+                    <button
+                      onClick={() => setActiveScenario("pretexting")}
+                      className="flex flex-col items-start rounded-lg border p-4 text-left shadow-sm transition-all hover:bg-muted/50 hover:shadow"
+                    >
+                      <div className="mb-2 flex w-full items-center justify-between">
+                        <UserRound className="h-6 w-6 text-primary" />
+                        {completedScenarios.includes("pretexting") && (
+                          <CheckCircle className="h-5 w-5 text-secondary" />
+                        )}
+                      </div>
+                      <h3 className="text-lg font-semibold">Pretexting</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Spot deception through false identities
+                      </p>
+                    </button>
+                    
+                    <button
+                      onClick={() => setActiveScenario("baiting-attack")}
+                      className="flex flex-col items-start rounded-lg border p-4 text-left shadow-sm transition-all hover:bg-muted/50 hover:shadow"
+                    >
+                      <div className="mb-2 flex w-full items-center justify-between">
+                        <Usb className="h-6 w-6 text-primary" />
+                        {completedScenarios.includes("baiting-attack") && (
+                          <CheckCircle className="h-5 w-5 text-secondary" />
+                        )}
+                      </div>
+                      <h3 className="text-lg font-semibold">Baiting Attack</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Recognize tempting traps set by attackers
+                      </p>
+                    </button>
+                    
+                    <button
+                      onClick={() => setActiveScenario("whaling-attack")}
+                      className="flex flex-col items-start rounded-lg border p-4 text-left shadow-sm transition-all hover:bg-muted/50 hover:shadow"
+                    >
+                      <div className="mb-2 flex w-full items-center justify-between">
+                        <BadgeDollarSign className="h-6 w-6 text-primary" />
+                        {completedScenarios.includes("whaling-attack") && (
+                          <CheckCircle className="h-5 w-5 text-secondary" />
+                        )}
+                      </div>
+                      <h3 className="text-lg font-semibold">Whaling Attack</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Identify targeted attacks against executives
+                      </p>
+                    </button>
+                    
+                    <button
+                      onClick={() => setActiveScenario("ransomware-simulation")}
+                      className="flex flex-col items-start rounded-lg border p-4 text-left shadow-sm transition-all hover:bg-muted/50 hover:shadow"
+                    >
+                      <div className="mb-2 flex w-full items-center justify-between">
+                        <Lock className="h-6 w-6 text-primary" />
+                        {completedScenarios.includes("ransomware-simulation") && (
+                          <CheckCircle className="h-5 w-5 text-secondary" />
+                        )}
+                      </div>
+                      <h3 className="text-lg font-semibold">Ransomware Attack</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Experience a ransomware attack and learn proper response
+                      </p>
+                    </button>
+                  </div>
+                </TabsContent>
 
                 <TabsContent value="completed" className="space-y-6 hidden md:block">
                   {completedScenarios.length > 0 ? (
@@ -542,7 +778,7 @@ const Scenarios = () => {
                           className="flex flex-col items-start rounded-lg border border-green-200 bg-green-50 p-4 text-left shadow-sm"
                         >
                           <div className="mb-2 flex w-full items-center justify-between">
-                            <Link className="h-6 w-6 text-primary" />
+                            <LinkIcon className="h-6 w-6 text-primary" />
                             <CheckCircle className="h-5 w-5 text-secondary" />
                           </div>
                           <h3 className="text-lg font-semibold">Suspicious Link</h3>
@@ -674,6 +910,86 @@ const Scenarios = () => {
                             <CheckCircle className="h-5 w-5 text-secondary" />
                           </div>
                           <h3 className="text-lg font-semibold">Health Product Ad</h3>
+                          <p className="text-sm text-muted-foreground">
+                            Completed
+                          </p>
+                        </button>
+                      )}
+                      
+                      {completedScenarios.includes("smishing") && (
+                        <button
+                          onClick={() => setActiveScenario("smishing")}
+                          className="flex flex-col items-start rounded-lg border border-green-200 bg-green-50 p-4 text-left shadow-sm"
+                        >
+                          <div className="mb-2 flex w-full items-center justify-between">
+                            <Smartphone className="h-6 w-6 text-primary" />
+                            <CheckCircle className="h-5 w-5 text-secondary" />
+                          </div>
+                          <h3 className="text-lg font-semibold">SMS Phishing</h3>
+                          <p className="text-sm text-muted-foreground">
+                            Completed
+                          </p>
+                        </button>
+                      )}
+                      
+                      {completedScenarios.includes("pretexting") && (
+                        <button
+                          onClick={() => setActiveScenario("pretexting")}
+                          className="flex flex-col items-start rounded-lg border border-green-200 bg-green-50 p-4 text-left shadow-sm"
+                        >
+                          <div className="mb-2 flex w-full items-center justify-between">
+                            <UserRound className="h-6 w-6 text-primary" />
+                            <CheckCircle className="h-5 w-5 text-secondary" />
+                          </div>
+                          <h3 className="text-lg font-semibold">Pretexting</h3>
+                          <p className="text-sm text-muted-foreground">
+                            Completed
+                          </p>
+                        </button>
+                      )}
+                      
+                      {completedScenarios.includes("baiting-attack") && (
+                        <button
+                          onClick={() => setActiveScenario("baiting-attack")}
+                          className="flex flex-col items-start rounded-lg border border-green-200 bg-green-50 p-4 text-left shadow-sm"
+                        >
+                          <div className="mb-2 flex w-full items-center justify-between">
+                            <Usb className="h-6 w-6 text-primary" />
+                            <CheckCircle className="h-5 w-5 text-secondary" />
+                          </div>
+                          <h3 className="text-lg font-semibold">Baiting Attack</h3>
+                          <p className="text-sm text-muted-foreground">
+                            Completed
+                          </p>
+                        </button>
+                      )}
+                      
+                      {completedScenarios.includes("whaling-attack") && (
+                        <button
+                          onClick={() => setActiveScenario("whaling-attack")}
+                          className="flex flex-col items-start rounded-lg border border-green-200 bg-green-50 p-4 text-left shadow-sm"
+                        >
+                          <div className="mb-2 flex w-full items-center justify-between">
+                            <BadgeDollarSign className="h-6 w-6 text-primary" />
+                            <CheckCircle className="h-5 w-5 text-secondary" />
+                          </div>
+                          <h3 className="text-lg font-semibold">Whaling Attack</h3>
+                          <p className="text-sm text-muted-foreground">
+                            Completed
+                          </p>
+                        </button>
+                      )}
+                      
+                      {completedScenarios.includes("ransomware-simulation") && (
+                        <button
+                          onClick={() => setActiveScenario("ransomware-simulation")}
+                          className="flex flex-col items-start rounded-lg border border-green-200 bg-green-50 p-4 text-left shadow-sm"
+                        >
+                          <div className="mb-2 flex w-full items-center justify-between">
+                            <Lock className="h-6 w-6 text-primary" />
+                            <CheckCircle className="h-5 w-5 text-secondary" />
+                          </div>
+                          <h3 className="text-lg font-semibold">Ransomware Attack</h3>
                           <p className="text-sm text-muted-foreground">
                             Completed
                           </p>
