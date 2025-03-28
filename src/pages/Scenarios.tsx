@@ -7,6 +7,11 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PhishingEmail from "@/components/PhishingEmail";
 import SuspiciousLink from "@/components/SuspiciousLink";
+import SocialMediaScam from "@/components/SocialMediaScam";
+import PhoneScam from "@/components/PhoneScam";
+import SpearPhishing from "@/components/SpearPhishing";
+import PaymentFraud from "@/components/PaymentFraud";
+import TechSupportScam from "@/components/TechSupportScam";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { CheckCircle } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
@@ -66,6 +71,146 @@ const Scenarios = () => {
     />
   );
 
+  const socialMediaScamScenario = (
+    <SocialMediaScam
+      profileName="John Williams"
+      username="johnwilliams_official"
+      postContent={`
+        <p>ATTENTION ALL FOLLOWERS! I've partnered with Amazon for a special giveaway! 🎉</p>
+        <p>I'm giving away 50 brand new iPhones to my loyal followers! To claim yours:</p>
+        <ol>
+          <li>Like and share this post</li>
+          <li>Click the link in my bio</li>
+          <li>Enter your personal information to verify identity</li>
+          <li>Pay a small $4.99 shipping fee</li>
+        </ol>
+        <p>Hurry! Only 5 phones left! This offer expires TODAY! 🔥🔥🔥</p>
+        <p><a href="#" class="text-blue-600 underline">Claim Your Free iPhone Now!</a></p>
+      `}
+      redFlags={[
+        "Offers that seem too good to be true (free expensive items)",
+        "Creates a false sense of urgency with limited quantities and time",
+        "Requires personal information that shouldn't be needed for a giveaway",
+        "Requests payment for a supposedly 'free' item",
+        "Uses excessive emojis and exclamation marks to create excitement",
+        "The profile may be impersonating someone famous (check for verification)"
+      ]}
+      onComplete={(success) => handleScenarioComplete("social-media-scam", success)}
+    />
+  );
+
+  const phoneScamScenario = (
+    <PhoneScam
+      callerName="IRS Tax Department"
+      phoneNumber="(888) 555-1234"
+      callScript={[
+        "Hello, this is Agent Wilson from the IRS Tax Department. I'm calling regarding an urgent matter with your tax returns.",
+        "Hello, what's this about? I filed my taxes on time.",
+        "Our records indicate you have unpaid taxes from 2019-2021 and there's currently a lawsuit filed against you. The local authorities have been notified and will arrive at your residence within the hour for arrest unless payment is arranged immediately.",
+        "What? That can't be right. I've never had issues with my taxes before.",
+        "This is your final warning. To avoid arrest and additional penalties, you must make an immediate payment of $2,987 using gift cards or a wire transfer. I can guide you through the process now.",
+        "Gift cards? Why would the IRS accept gift cards as payment?",
+        "It's a new emergency procedure for urgent cases. I need you to stay on the line while you drive to the nearest store to purchase these cards. Do not tell anyone why you're buying them - this is a confidential tax matter."
+      ]}
+      redFlags={[
+        "Government agencies like the IRS never initiate contact by phone for tax issues",
+        "Creating fear and urgency by threatening immediate arrest",
+        "Requesting payment through unusual methods like gift cards",
+        "Insistence on staying on the phone while you get the payment method",
+        "Warning you not to tell others what you're doing",
+        "Poor grammar or unusual speech patterns may be present",
+        "The caller ID may show a seemingly legitimate number (spoofed)"
+      ]}
+      onComplete={(success) => handleScenarioComplete("phone-scam", success)}
+    />
+  );
+
+  const spearPhishingScenario = (
+    <SpearPhishing
+      sender="hr-benefits@technovation-global.net"
+      subject="Urgent: Benefits Update Required - Response Needed by EOD"
+      content={`
+        <p>Hello,</p>
+        <p>I hope you're doing well after the company retreat last month in Colorado. It was great to see you at the team building activities!</p>
+        <p>As discussed in yesterday's all-hands meeting, we're updating our benefits portal for the upcoming enrollment period. As part of the IT department, you have priority access to the new system.</p>
+        <p>Please review and update your information by end of day. This requires your network credentials to verify your identity before making changes. Our CEO, Mark Reynolds, has emphasized the importance of completing this promptly.</p>
+        <p><a href="#" class="text-blue-600 underline">Access Benefits Portal</a></p>
+        <p>If you have any questions, don't hesitate to reach out.</p>
+        <p>Best regards,</p>
+        <p>Jennifer Parker<br>Human Resources Director<br>Technovation Global Inc.</p>
+      `}
+      companyInfo={{
+        name: "Technovation Global Inc.",
+        role: "IT Security Specialist"
+      }}
+      personalDetails={[
+        "Knowledge of your recent company retreat location (Colorado)",
+        "Reference to your department (IT)",
+        "Knowledge of an all-hands meeting",
+        "Correct CEO name (Mark Reynolds)",
+        "Using professional HR terminology appropriate for your company"
+      ]}
+      redFlags={[
+        "The email domain doesn't match your company's official domain (technovation-global.net vs technovation.com)",
+        "Creating urgency with 'Response Needed by EOD'",
+        "Requesting network credentials that HR wouldn't typically need",
+        "Link destination doesn't lead to your company's actual benefits portal",
+        "Uses specific details about you and your company to appear legitimate",
+        "Uses authority (CEO name) to pressure compliance"
+      ]}
+      onComplete={(success) => handleScenarioComplete("spear-phishing", success)}
+    />
+  );
+
+  const paymentFraudScenario = (
+    <PaymentFraud
+      merchantName="ExclusiveDeals Market"
+      totalAmount="$19.99"
+      paymentDetails={{
+        description: "Premium Subscription - Lifetime Access",
+        originalPrice: "$499.99",
+        discountedPrice: "$19.99"
+      }}
+      redFlags={[
+        "Unrealistic discounts (from $499.99 to $19.99)",
+        "Creates urgency with time-limited offers and countdowns",
+        "Merchant name is generic and unfamiliar",
+        "No detailed contact information or verifiable business address",
+        "Website URL may be slightly misspelled or use unusual domains (.co, .net instead of .com)",
+        "Poor design, spelling errors, or unprofessional appearance",
+        "No secure payment indicators (HTTPS, padlock icon)",
+        "Lack of privacy policy or terms of service"
+      ]}
+      onComplete={(success) => handleScenarioComplete("payment-fraud", success)}
+    />
+  );
+
+  const techSupportScamScenario = (
+    <TechSupportScam
+      alertTitle="SYSTEM SECURITY ALERT"
+      alertMessage="Your computer has been infected with dangerous malware. Call our technicians immediately!"
+      supportNumber="1-888-555-9876"
+      technicalDetails={[
+        "ERROR_MALWARE_DETECTED: Trojan.FakeAlert.Win32",
+        "SYSTEM_SCAN: 3 threats detected, severity level: CRITICAL",
+        "IP_ADDRESS: 192.168.1.1 has been COMPROMISED",
+        "PERSONAL_DATA: Banking information at risk of theft",
+        "SYSTEM_REGISTRY: Multiple corrupted keys detected"
+      ]}
+      redFlags={[
+        "Unsolicited pop-ups claiming to have detected viruses or malware",
+        "Scare tactics and urgent language to create panic",
+        "Providing a phone number to call for 'immediate assistance'",
+        "Use of technical jargon to appear legitimate",
+        "Claims that your personal data is at immediate risk",
+        "Alert windows that can't be easily closed",
+        "Poor grammar and spelling in supposedly 'official' messages",
+        "Legitimate tech companies never use pop-ups with phone numbers"
+      ]}
+      onComplete={(success) => handleScenarioComplete("tech-support-scam", success)}
+    />
+  );
+
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
@@ -85,6 +230,11 @@ const Scenarios = () => {
                   <h2 className="text-2xl font-semibold">
                     {activeScenario === "phishing-email" && "Phishing Email Scenario"}
                     {activeScenario === "suspicious-link" && "Suspicious Link Scenario"}
+                    {activeScenario === "social-media-scam" && "Social Media Scam Scenario"}
+                    {activeScenario === "phone-scam" && "Phone Scam Scenario"}
+                    {activeScenario === "spear-phishing" && "Spear Phishing Scenario"}
+                    {activeScenario === "payment-fraud" && "Payment Fraud Scenario"}
+                    {activeScenario === "tech-support-scam" && "Tech Support Scam Scenario"}
                   </h2>
                   <Button variant="outline" onClick={resetScenario}>
                     Choose Another Scenario
@@ -93,6 +243,11 @@ const Scenarios = () => {
 
                 {activeScenario === "phishing-email" && phishingEmailScenario}
                 {activeScenario === "suspicious-link" && suspiciousLinkScenario}
+                {activeScenario === "social-media-scam" && socialMediaScamScenario}
+                {activeScenario === "phone-scam" && phoneScamScenario}
+                {activeScenario === "spear-phishing" && spearPhishingScenario}
+                {activeScenario === "payment-fraud" && paymentFraudScenario}
+                {activeScenario === "tech-support-scam" && techSupportScamScenario}
               </div>
             ) : (
               <Tabs defaultValue="common" className="space-y-6">
@@ -137,24 +292,34 @@ const Scenarios = () => {
                     </button>
                     
                     <button
+                      onClick={() => setActiveScenario("social-media-scam")}
                       className="flex flex-col items-start rounded-lg border p-4 text-left shadow-sm transition-all hover:bg-muted/50 hover:shadow"
-                      disabled
                     >
-                      <Users className="mb-2 h-6 w-6 text-muted-foreground" />
-                      <h3 className="text-lg font-semibold text-muted-foreground">Social Media Scam</h3>
+                      <div className="mb-2 flex w-full items-center justify-between">
+                        <Users className="h-6 w-6 text-primary" />
+                        {completedScenarios.includes("social-media-scam") && (
+                          <CheckCircle className="h-5 w-5 text-secondary" />
+                        )}
+                      </div>
+                      <h3 className="text-lg font-semibold">Social Media Scam</h3>
                       <p className="text-sm text-muted-foreground">
-                        Coming soon...
+                        Identify fraudulent posts and promotions
                       </p>
                     </button>
                     
                     <button
+                      onClick={() => setActiveScenario("phone-scam")}
                       className="flex flex-col items-start rounded-lg border p-4 text-left shadow-sm transition-all hover:bg-muted/50 hover:shadow"
-                      disabled
                     >
-                      <Phone className="mb-2 h-6 w-6 text-muted-foreground" />
-                      <h3 className="text-lg font-semibold text-muted-foreground">Phone Scam</h3>
+                      <div className="mb-2 flex w-full items-center justify-between">
+                        <Phone className="h-6 w-6 text-primary" />
+                        {completedScenarios.includes("phone-scam") && (
+                          <CheckCircle className="h-5 w-5 text-secondary" />
+                        )}
+                      </div>
+                      <h3 className="text-lg font-semibold">Phone Scam</h3>
                       <p className="text-sm text-muted-foreground">
-                        Coming soon...
+                        Recognize fraudulent calls and voice phishing
                       </p>
                     </button>
                   </div>
@@ -163,35 +328,50 @@ const Scenarios = () => {
                 <TabsContent value="advanced" className="space-y-6">
                   <div className="grid gap-4 sm:grid-cols-2">
                     <button
+                      onClick={() => setActiveScenario("spear-phishing")}
                       className="flex flex-col items-start rounded-lg border p-4 text-left shadow-sm transition-all hover:bg-muted/50 hover:shadow"
-                      disabled
                     >
-                      <MessageSquare className="mb-2 h-6 w-6 text-muted-foreground" />
-                      <h3 className="text-lg font-semibold text-muted-foreground">Spear Phishing</h3>
+                      <div className="mb-2 flex w-full items-center justify-between">
+                        <MessageSquare className="h-6 w-6 text-primary" />
+                        {completedScenarios.includes("spear-phishing") && (
+                          <CheckCircle className="h-5 w-5 text-secondary" />
+                        )}
+                      </div>
+                      <h3 className="text-lg font-semibold">Spear Phishing</h3>
                       <p className="text-sm text-muted-foreground">
-                        Coming soon...
+                        Detect targeted phishing attacks using personal information
                       </p>
                     </button>
                     
                     <button
+                      onClick={() => setActiveScenario("payment-fraud")}
                       className="flex flex-col items-start rounded-lg border p-4 text-left shadow-sm transition-all hover:bg-muted/50 hover:shadow"
-                      disabled
                     >
-                      <CreditCard className="mb-2 h-6 w-6 text-muted-foreground" />
-                      <h3 className="text-lg font-semibold text-muted-foreground">Payment Fraud</h3>
+                      <div className="mb-2 flex w-full items-center justify-between">
+                        <CreditCard className="h-6 w-6 text-primary" />
+                        {completedScenarios.includes("payment-fraud") && (
+                          <CheckCircle className="h-5 w-5 text-secondary" />
+                        )}
+                      </div>
+                      <h3 className="text-lg font-semibold">Payment Fraud</h3>
                       <p className="text-sm text-muted-foreground">
-                        Coming soon...
+                        Identify fake payment pages and too-good-to-be-true offers
                       </p>
                     </button>
                     
                     <button
+                      onClick={() => setActiveScenario("tech-support-scam")}
                       className="flex flex-col items-start rounded-lg border p-4 text-left shadow-sm transition-all hover:bg-muted/50 hover:shadow"
-                      disabled
                     >
-                      <AlertTriangle className="mb-2 h-6 w-6 text-muted-foreground" />
-                      <h3 className="text-lg font-semibold text-muted-foreground">Tech Support Scam</h3>
+                      <div className="mb-2 flex w-full items-center justify-between">
+                        <AlertTriangle className="h-6 w-6 text-primary" />
+                        {completedScenarios.includes("tech-support-scam") && (
+                          <CheckCircle className="h-5 w-5 text-secondary" />
+                        )}
+                      </div>
+                      <h3 className="text-lg font-semibold">Tech Support Scam</h3>
                       <p className="text-sm text-muted-foreground">
-                        Coming soon...
+                        Spot fake virus alerts and technical support offers
                       </p>
                     </button>
                   </div>
@@ -226,6 +406,86 @@ const Scenarios = () => {
                             <CheckCircle className="h-5 w-5 text-secondary" />
                           </div>
                           <h3 className="text-lg font-semibold">Suspicious Link</h3>
+                          <p className="text-sm text-muted-foreground">
+                            Completed
+                          </p>
+                        </button>
+                      )}
+                      
+                      {completedScenarios.includes("social-media-scam") && (
+                        <button
+                          onClick={() => setActiveScenario("social-media-scam")}
+                          className="flex flex-col items-start rounded-lg border border-green-200 bg-green-50 p-4 text-left shadow-sm"
+                        >
+                          <div className="mb-2 flex w-full items-center justify-between">
+                            <Users className="h-6 w-6 text-primary" />
+                            <CheckCircle className="h-5 w-5 text-secondary" />
+                          </div>
+                          <h3 className="text-lg font-semibold">Social Media Scam</h3>
+                          <p className="text-sm text-muted-foreground">
+                            Completed
+                          </p>
+                        </button>
+                      )}
+                      
+                      {completedScenarios.includes("phone-scam") && (
+                        <button
+                          onClick={() => setActiveScenario("phone-scam")}
+                          className="flex flex-col items-start rounded-lg border border-green-200 bg-green-50 p-4 text-left shadow-sm"
+                        >
+                          <div className="mb-2 flex w-full items-center justify-between">
+                            <Phone className="h-6 w-6 text-primary" />
+                            <CheckCircle className="h-5 w-5 text-secondary" />
+                          </div>
+                          <h3 className="text-lg font-semibold">Phone Scam</h3>
+                          <p className="text-sm text-muted-foreground">
+                            Completed
+                          </p>
+                        </button>
+                      )}
+                      
+                      {completedScenarios.includes("spear-phishing") && (
+                        <button
+                          onClick={() => setActiveScenario("spear-phishing")}
+                          className="flex flex-col items-start rounded-lg border border-green-200 bg-green-50 p-4 text-left shadow-sm"
+                        >
+                          <div className="mb-2 flex w-full items-center justify-between">
+                            <MessageSquare className="h-6 w-6 text-primary" />
+                            <CheckCircle className="h-5 w-5 text-secondary" />
+                          </div>
+                          <h3 className="text-lg font-semibold">Spear Phishing</h3>
+                          <p className="text-sm text-muted-foreground">
+                            Completed
+                          </p>
+                        </button>
+                      )}
+                      
+                      {completedScenarios.includes("payment-fraud") && (
+                        <button
+                          onClick={() => setActiveScenario("payment-fraud")}
+                          className="flex flex-col items-start rounded-lg border border-green-200 bg-green-50 p-4 text-left shadow-sm"
+                        >
+                          <div className="mb-2 flex w-full items-center justify-between">
+                            <CreditCard className="h-6 w-6 text-primary" />
+                            <CheckCircle className="h-5 w-5 text-secondary" />
+                          </div>
+                          <h3 className="text-lg font-semibold">Payment Fraud</h3>
+                          <p className="text-sm text-muted-foreground">
+                            Completed
+                          </p>
+                        </button>
+                      )}
+                      
+                      {completedScenarios.includes("tech-support-scam") && (
+                        <button
+                          onClick={() => setActiveScenario("tech-support-scam")}
+                          className="flex flex-col items-start rounded-lg border border-green-200 bg-green-50 p-4 text-left shadow-sm"
+                        >
+                          <div className="mb-2 flex w-full items-center justify-between">
+                            <AlertTriangle className="h-6 w-6 text-primary" />
+                            <CheckCircle className="h-5 w-5 text-secondary" />
+                          </div>
+                          <h3 className="text-lg font-semibold">Tech Support Scam</h3>
                           <p className="text-sm text-muted-foreground">
                             Completed
                           </p>

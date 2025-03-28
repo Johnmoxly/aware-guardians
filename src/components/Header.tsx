@@ -1,9 +1,13 @@
 
-import { Shield } from "lucide-react";
+import { useState } from "react";
+import { Shield, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
 const Header = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
     <header className="border-b border-border bg-background py-4">
       <div className="container flex items-center justify-between">
@@ -25,7 +29,33 @@ const Header = () => {
             <Link to="/about">About</Link>
           </Button>
         </nav>
-        <Button variant="outline" className="md:hidden">Menu</Button>
+        
+        <Sheet open={isOpen} onOpenChange={setIsOpen}>
+          <SheetTrigger asChild>
+            <Button variant="outline" className="md:hidden">
+              <Menu className="h-5 w-5" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent>
+            <SheetHeader>
+              <SheetTitle>Menu</SheetTitle>
+            </SheetHeader>
+            <div className="mt-6 flex flex-col space-y-4">
+              <Button variant="ghost" asChild onClick={() => setIsOpen(false)}>
+                <Link to="/">Home</Link>
+              </Button>
+              <Button variant="ghost" asChild onClick={() => setIsOpen(false)}>
+                <Link to="/scenarios">Scenarios</Link>
+              </Button>
+              <Button variant="ghost" asChild onClick={() => setIsOpen(false)}>
+                <Link to="/resources">Resources</Link>
+              </Button>
+              <Button variant="ghost" asChild onClick={() => setIsOpen(false)}>
+                <Link to="/about">About</Link>
+              </Button>
+            </div>
+          </SheetContent>
+        </Sheet>
       </div>
     </header>
   );

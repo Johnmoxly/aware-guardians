@@ -14,7 +14,6 @@ const SecurityTipCard = ({ title, description, icon: Icon }: SecurityTipCardProp
       <CardHeader>
         <Icon className="h-8 w-8 text-primary mb-2" />
         <CardTitle className="text-xl">{title}</CardTitle>
-        <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardContent>
         <p className="text-sm text-muted-foreground">
