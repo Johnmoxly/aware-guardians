@@ -1,6 +1,16 @@
-
 import { useState } from "react";
-import { Mail, Link, AlertTriangle, Users, Phone, MessageSquare, CreditCard } from "lucide-react";
+import { 
+  Mail, 
+  Link, 
+  AlertTriangle, 
+  Users, 
+  Phone, 
+  MessageSquare, 
+  CreditCard,
+  Clock,
+  HelpCircle,
+  Info
+} from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -12,6 +22,9 @@ import PhoneScam from "@/components/PhoneScam";
 import SpearPhishing from "@/components/SpearPhishing";
 import PaymentFraud from "@/components/PaymentFraud";
 import TechSupportScam from "@/components/TechSupportScam";
+import TechConfusionScam from "@/components/TechConfusionScam";
+import LotteryScam from "@/components/LotteryScam";
+import HealthProductScam from "@/components/HealthProductScam";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { CheckCircle } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
@@ -211,6 +224,74 @@ const Scenarios = () => {
     />
   );
 
+  const techConfusionScamScenario = (
+    <TechConfusionScam
+      serviceName="Windows Security Team"
+      problem="Your computer has a dangerous virus! It is sending your personal information to hackers. You need immediate help!"
+      supportNumber="1-800-555-1234"
+      redFlags={[
+        "Sudden popups claiming your computer has a virus",
+        "Creating fear and urgency with alarming messages",
+        "Providing a phone number to call for 'immediate help'",
+        "Mentioning well-known companies like Microsoft or Windows to seem legitimate",
+        "Using technical terms to confuse less tech-savvy users",
+        "Requesting remote access to your computer",
+        "Asking for payment to fix the 'problem'"
+      ]}
+      onComplete={(success) => handleScenarioComplete("tech-confusion-scam", success)}
+    />
+  );
+
+  const lotteryScamScenario = (
+    <LotteryScam
+      prizeName="International Sweepstakes Award"
+      prizeAmount="$2,500,000.00 USD"
+      deadline="May 15, 2023 (48 hours remaining)"
+      contactPerson="Mr. James Wilson, Claims Officer"
+      contactEmail="claims-office@sweepstakes-intl.net"
+      redFlags={[
+        "You're notified of winning a lottery or sweepstakes you never entered",
+        "The notification creates urgency with a tight deadline",
+        "Poor grammar or unprofessional formatting",
+        "The email address domain doesn't match the supposed organization",
+        "Requests for personal information like bank details or ID",
+        "Requires payment of fees before receiving your 'prize'",
+        "The offer seems too good to be true"
+      ]}
+      onComplete={(success) => handleScenarioComplete("lottery-scam", success)}
+    />
+  );
+
+  const healthProductScamScenario = (
+    <HealthProductScam
+      productName="MiracleFlex Joint Formula"
+      medicalClaims={[
+        "Eliminates joint pain in just 7 days!",
+        "Rebuilds damaged cartilage naturally",
+        "Works better than prescription medications",
+        "Doctor-recommended secret formula",
+        "Cures arthritis, rheumatism, and other conditions"
+      ]}
+      specialOffer="Buy 1 bottle for $89.99 and get 2 FREE! Limited supply - only 13 bottles left!"
+      testimonial={{
+        name: "Margaret Johnson",
+        age: "78",
+        quote: "I've suffered from terrible joint pain for 15 years. After just one week of MiracleFlex, I can walk, garden and play with my grandchildren again! The doctors were amazed!"
+      }}
+      redFlags={[
+        "Making miraculous claims about curing health conditions",
+        "Promising results that seem too good to be true",
+        "Creating false urgency with 'limited time' or 'limited supply' offers",
+        "Using testimonials that can't be verified",
+        "Mentioning 'secret formulas' or 'breakthroughs' that mainstream medicine doesn't know about",
+        "Claiming to be better than prescription medications",
+        "Fine print disclaimer contradicting the main claims",
+        "High-priced products with 'free' bonus offers"
+      ]}
+      onComplete={(success) => handleScenarioComplete("health-product-scam", success)}
+    />
+  );
+
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
@@ -235,6 +316,9 @@ const Scenarios = () => {
                     {activeScenario === "spear-phishing" && "Spear Phishing Scenario"}
                     {activeScenario === "payment-fraud" && "Payment Fraud Scenario"}
                     {activeScenario === "tech-support-scam" && "Tech Support Scam Scenario"}
+                    {activeScenario === "tech-confusion-scam" && "Computer Virus Alert Scenario"}
+                    {activeScenario === "lottery-scam" && "Lottery Prize Scenario"}
+                    {activeScenario === "health-product-scam" && "Health Product Advertisement Scenario"}
                   </h2>
                   <Button variant="outline" onClick={resetScenario}>
                     Choose Another Scenario
@@ -248,13 +332,17 @@ const Scenarios = () => {
                 {activeScenario === "spear-phishing" && spearPhishingScenario}
                 {activeScenario === "payment-fraud" && paymentFraudScenario}
                 {activeScenario === "tech-support-scam" && techSupportScamScenario}
+                {activeScenario === "tech-confusion-scam" && techConfusionScamScenario}
+                {activeScenario === "lottery-scam" && lotteryScamScenario}
+                {activeScenario === "health-product-scam" && healthProductScamScenario}
               </div>
             ) : (
               <Tabs defaultValue="common" className="space-y-6">
                 <TabsList className="grid w-full max-w-md mx-auto grid-cols-3">
                   <TabsTrigger value="common">Common Attacks</TabsTrigger>
                   <TabsTrigger value="advanced">Advanced</TabsTrigger>
-                  <TabsTrigger value="completed">Completed</TabsTrigger>
+                  <TabsTrigger value="seniors">For Seniors</TabsTrigger>
+                  <TabsTrigger value="completed" className="hidden md:block">Completed</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="common" className="space-y-6">
@@ -377,7 +465,59 @@ const Scenarios = () => {
                   </div>
                 </TabsContent>
 
-                <TabsContent value="completed" className="space-y-6">
+                <TabsContent value="seniors" className="space-y-6">
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <button
+                      onClick={() => setActiveScenario("tech-confusion-scam")}
+                      className="flex flex-col items-start rounded-lg border p-4 text-left shadow-sm transition-all hover:bg-muted/50 hover:shadow"
+                    >
+                      <div className="mb-2 flex w-full items-center justify-between">
+                        <HelpCircle className="h-6 w-6 text-primary" />
+                        {completedScenarios.includes("tech-confusion-scam") && (
+                          <CheckCircle className="h-5 w-5 text-secondary" />
+                        )}
+                      </div>
+                      <h3 className="text-lg font-semibold">Computer Virus Alert</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Recognize fake computer virus warnings
+                      </p>
+                    </button>
+                    
+                    <button
+                      onClick={() => setActiveScenario("lottery-scam")}
+                      className="flex flex-col items-start rounded-lg border p-4 text-left shadow-sm transition-all hover:bg-muted/50 hover:shadow"
+                    >
+                      <div className="mb-2 flex w-full items-center justify-between">
+                        <Clock className="h-6 w-6 text-primary" />
+                        {completedScenarios.includes("lottery-scam") && (
+                          <CheckCircle className="h-5 w-5 text-secondary" />
+                        )}
+                      </div>
+                      <h3 className="text-lg font-semibold">Lottery Prize</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Identify fake lottery and sweepstakes scams
+                      </p>
+                    </button>
+                    
+                    <button
+                      onClick={() => setActiveScenario("health-product-scam")}
+                      className="flex flex-col items-start rounded-lg border p-4 text-left shadow-sm transition-all hover:bg-muted/50 hover:shadow"
+                    >
+                      <div className="mb-2 flex w-full items-center justify-between">
+                        <Info className="h-6 w-6 text-primary" />
+                        {completedScenarios.includes("health-product-scam") && (
+                          <CheckCircle className="h-5 w-5 text-secondary" />
+                        )}
+                      </div>
+                      <h3 className="text-lg font-semibold">Health Product Ad</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Spot misleading health product advertisements
+                      </p>
+                    </button>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="completed" className="space-y-6 hidden md:block">
                   {completedScenarios.length > 0 ? (
                     <div className="grid gap-4 sm:grid-cols-2">
                       {completedScenarios.includes("phishing-email") && (
@@ -486,6 +626,54 @@ const Scenarios = () => {
                             <CheckCircle className="h-5 w-5 text-secondary" />
                           </div>
                           <h3 className="text-lg font-semibold">Tech Support Scam</h3>
+                          <p className="text-sm text-muted-foreground">
+                            Completed
+                          </p>
+                        </button>
+                      )}
+                      
+                      {completedScenarios.includes("tech-confusion-scam") && (
+                        <button
+                          onClick={() => setActiveScenario("tech-confusion-scam")}
+                          className="flex flex-col items-start rounded-lg border border-green-200 bg-green-50 p-4 text-left shadow-sm"
+                        >
+                          <div className="mb-2 flex w-full items-center justify-between">
+                            <HelpCircle className="h-6 w-6 text-primary" />
+                            <CheckCircle className="h-5 w-5 text-secondary" />
+                          </div>
+                          <h3 className="text-lg font-semibold">Computer Virus Alert</h3>
+                          <p className="text-sm text-muted-foreground">
+                            Completed
+                          </p>
+                        </button>
+                      )}
+                      
+                      {completedScenarios.includes("lottery-scam") && (
+                        <button
+                          onClick={() => setActiveScenario("lottery-scam")}
+                          className="flex flex-col items-start rounded-lg border border-green-200 bg-green-50 p-4 text-left shadow-sm"
+                        >
+                          <div className="mb-2 flex w-full items-center justify-between">
+                            <Clock className="h-6 w-6 text-primary" />
+                            <CheckCircle className="h-5 w-5 text-secondary" />
+                          </div>
+                          <h3 className="text-lg font-semibold">Lottery Prize</h3>
+                          <p className="text-sm text-muted-foreground">
+                            Completed
+                          </p>
+                        </button>
+                      )}
+                      
+                      {completedScenarios.includes("health-product-scam") && (
+                        <button
+                          onClick={() => setActiveScenario("health-product-scam")}
+                          className="flex flex-col items-start rounded-lg border border-green-200 bg-green-50 p-4 text-left shadow-sm"
+                        >
+                          <div className="mb-2 flex w-full items-center justify-between">
+                            <Info className="h-6 w-6 text-primary" />
+                            <CheckCircle className="h-5 w-5 text-secondary" />
+                          </div>
+                          <h3 className="text-lg font-semibold">Health Product Ad</h3>
                           <p className="text-sm text-muted-foreground">
                             Completed
                           </p>

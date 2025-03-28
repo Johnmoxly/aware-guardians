@@ -2,11 +2,16 @@
 import { useState } from "react";
 import { Shield, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
+  
+  const isActive = (path: string) => {
+    return location.pathname === path;
+  };
 
   return (
     <header className="border-b border-border bg-background py-4">
@@ -16,16 +21,28 @@ const Header = () => {
           <h1 className="text-xl font-bold md:text-2xl">SecureAware</h1>
         </div>
         <nav className="hidden space-x-4 md:block">
-          <Button variant="link" asChild>
+          <Button 
+            variant={isActive("/") ? "default" : "link"} 
+            asChild
+          >
             <Link to="/">Home</Link>
           </Button>
-          <Button variant="link" asChild>
+          <Button 
+            variant={isActive("/scenarios") ? "default" : "link"} 
+            asChild
+          >
             <Link to="/scenarios">Scenarios</Link>
           </Button>
-          <Button variant="link" asChild>
+          <Button 
+            variant={isActive("/resources") ? "default" : "link"} 
+            asChild
+          >
             <Link to="/resources">Resources</Link>
           </Button>
-          <Button variant="link" asChild>
+          <Button 
+            variant={isActive("/about") ? "default" : "link"} 
+            asChild
+          >
             <Link to="/about">About</Link>
           </Button>
         </nav>
@@ -41,16 +58,32 @@ const Header = () => {
               <SheetTitle>Menu</SheetTitle>
             </SheetHeader>
             <div className="mt-6 flex flex-col space-y-4">
-              <Button variant="ghost" asChild onClick={() => setIsOpen(false)}>
+              <Button 
+                variant={isActive("/") ? "default" : "ghost"} 
+                asChild 
+                onClick={() => setIsOpen(false)}
+              >
                 <Link to="/">Home</Link>
               </Button>
-              <Button variant="ghost" asChild onClick={() => setIsOpen(false)}>
+              <Button 
+                variant={isActive("/scenarios") ? "default" : "ghost"} 
+                asChild 
+                onClick={() => setIsOpen(false)}
+              >
                 <Link to="/scenarios">Scenarios</Link>
               </Button>
-              <Button variant="ghost" asChild onClick={() => setIsOpen(false)}>
+              <Button 
+                variant={isActive("/resources") ? "default" : "ghost"} 
+                asChild 
+                onClick={() => setIsOpen(false)}
+              >
                 <Link to="/resources">Resources</Link>
               </Button>
-              <Button variant="ghost" asChild onClick={() => setIsOpen(false)}>
+              <Button 
+                variant={isActive("/about") ? "default" : "ghost"} 
+                asChild 
+                onClick={() => setIsOpen(false)}
+              >
                 <Link to="/about">About</Link>
               </Button>
             </div>

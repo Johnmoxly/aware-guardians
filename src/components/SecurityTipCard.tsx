@@ -10,13 +10,13 @@ interface SecurityTipCardProps {
 
 const SecurityTipCard = ({ title, description, icon: Icon }: SecurityTipCardProps) => {
   return (
-    <Card className="hover-card h-full">
+    <Card className="hover:shadow-md transition-all h-full">
       <CardHeader>
         <Icon className="h-8 w-8 text-primary mb-2" />
         <CardTitle className="text-xl">{title}</CardTitle>
       </CardHeader>
       <CardContent>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-muted-foreground">
           {description}
         </p>
       </CardContent>
